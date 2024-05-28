@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculatrice</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js"
+        integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8=" crossorigin="anonymous"></script>
+    <style>
+        #calculette {
+            max-width: 400px;
+            margin: 50px auto;
+            border: 2px solid #ced4da;
+            border-radius: 10px;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+
+        .enteteCalculette {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .ecran {
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            padding: 10px;
+            font-size: 24px;
+            background-color: #ffffff;
+            text-align: right;
+            margin-bottom: 10px;
+        }
+
+        .reset {
+            display: block;
+            margin: 0 auto;
+            color: #dc3545;
+            cursor: pointer;
+            background-color: #ffffff;
+            width: 20%;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            padding: 10px;
+        }
+
+        .touchesCalculette {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        .touchesCalculette span {
+            display: inline-block;
+            padding: 15px;
+            font-size: 18px;
+            text-align: center;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            background-color: #e9ecef;
+            cursor: pointer;
+        }
+
+        .touchesCalculette .operateurs {
+            background-color: #ffc107;
+        }
+
+        .touchesCalculette .egal {
+            background-color: #28a745;
+            color: white;
+        }
+    </style>
+</head>
+
+<script>
+
+    $(document).ready(function () {
+        let currentInput = "";
+        let operator = null;
+        let previousInput = "";
+
+        function updateScreen(value) {
+            $('.ecran').text(value);
+        }
+
+        $('.reset').on('click', function () {
+            previousInput = "";
+            currentInput = "";
+            operator = null;
+            updateScreen(0);
+        });
+
+        $('.touchesCalculette span').on('click', function () {
+            const input = $(this).text();
+
+            if ($(this).hasClass('reset')) {
+                currentInput = "";
+                operator = null;
+                previousInput = "";
+                updateScreen(0);
+            } else if ($(this).hasClass('operateurs')) {
+                if (currentInput !== "") {
+                    if (previousInput !== "") {
+                        calculate();
+                    }
+                    operator = input;
+                    previousInput = currentInput;
+                    currentInput = "";
+                }
+            } else if ($(this).hasClass('egal')) {
+                calculate();
+                operator = null;
+            } else {
+                if (input === "." && currentInput.includes(".")) return;
+                currentInput += input;
+                updateScreen(currentInput);
+            }
+        });
+
+        function calculate() {
+            let result;
+            const previous = parseFloat(previousInput);
+            const current = parseFloat(currentInput);
+
+            if (isNaN(previous) || isNaN(current)) return;
+
+            switch (operator) {
+                case "+":
+                    result = previous + current;
+                    break;
+                case "-":
+                    result = previous - current;
+                    break;
+                case "x":
+                    result = previous * current;
+                    break;
+                case "/":
+                    result = previous / current;
+                    break;
+                default:
+                    return;
+            }
+
+            currentInput = result.toString();
+            previousInput = "";
+            updateScreen(result);
+        }
+    });
+
+
+</script>
+
+<body>
+    <div id="calculette">
+        <div class="enteteCalculette">
+            <div class="ecran mb-2">0</div>
+            <span class="reset">C</span>
+        </div>
+
+        <div class="touchesCalculette">
+            <span id="7">7</span>
+            <span id="8">8</span>
+            <span id="9">9</span>
+            <span class="operateurs">-</span>
+
+            <span id="4">4</span>
+            <span id="5">5</span>
+            <span id="6">6</span>
+            <span class="operateurs">+</span>
+
+            <span id="1">1</span>
+            <span id="2">2</span>
+            <span id="3">3</span>
+            <span class="operateurs">/</span>
+
+            <span id="0" class="touchesBas">0</span>
+            <span class="touchesBas">.</span>
+            <span class="egal touchesBas">=</span>
+            <span class="operateurs touchesBas">x</span>
+        </div>
+    </div>
+</body>
+
+</html>

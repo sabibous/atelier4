@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QCM</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        .correct { background-color: lightgreen; }
+        .incorrect { background-color: lightcoral; }
+        .missing { background-color: orange; }
+        .answer-correct { color: green; }
+        .answer-incorrect { color: red; }
+    </style>
+</head>
+<body>
+    <form id="qcmForm">
+        <div class="question" data-correct="q1r2">
+            <p>1. Quelle est la capitale de la France ?</p>
+            <input type="radio" name="q1" id="q1r1" value="q1r1"><label for="q1r1">Berlin</label><br>
+            <input type="radio" name="q1" id="q1r2" value="q1r2"><label for="q1r2">Paris</label><br>
+            <input type="radio" name="q1" id="q1r3" value="q1r3"><label for="q1r3">Madrid</label><br>
+        </div>
+        
+        <div class="question" data-correct="q2r1">
+            <p>2. Quelle est la plus grande planète du système solaire ?</p>
+            <input type="radio" name="q2" id="q2r1" value="q2r1"><label for="q2r1">Jupiter</label><br>
+            <input type="radio" name="q2" id="q2r2" value="q2r2"><label for="q2r2">Saturne</label><br>
+            <input type="radio" name="q2" id="q2r3" value="q2r3"><label for="q2r3">Mars</label><br>
+        </div>
+        
+        <div class="question" data-correct="q3r3">
+            <p>3. Quelle est la formule chimique de l'eau ?</p>
+            <input type="radio" name="q3" id="q3r1" value="q3r1"><label for="q3r1">CO2</label><br>
+            <input type="radio" name="q3" id="q3r2" value="q3r2"><label for="q3r2">O2</label><br>
+            <input type="radio" name="q3" id="q3r3" value="q3r3"><label for="q3r3">H2O</label><br>
+        </div>
+        
+        <div class="question" data-correct="q4r1">
+            <p>4. Qui a écrit "Les Misérables" ?</p>
+            <input type="radio" name="q4" id="q4r1" value="q4r1"><label for="q4r1">Victor Hugo</label><br>
+            <input type="radio" name="q4" id="q4r2" value="q4r2"><label for="q4r2">Émile Zola</label><br>
+            <input type="radio" name="q4" id="q4r3" value="q4r3"><label for="q4r3">Gustave Flaubert</label><br>
+        </div>
+        
+        <div class="question" data-correct="q5r2">
+            <p>5. Quelle est la vitesse de la lumière ?</p>
+            <input type="radio" name="q5" id="q5r1" value="q5r1"><label for="q5r1">300,000 km/s</label><br>
+            <input type="radio" name="q5" id="q5r2" value="q5r2"><label for="q5r2">299,792 km/s</label><br>
+            <input type="radio" name="q5" id="q5r3" value="q5r3"><label for="q5r3">150,000 km/s</label><br>
+        </div>
+
+        <button type="button" id="corrigerBtn">Corriger</button>
+    </form>
+    <div id="resultat"></div>
+
+    <script>
+        $(document).ready(function() {
+            $("#corrigerBtn").click(function() {
+                var score = 0;
+                var totalQuestions = $(".question").length;
+                var allAnswered = true;
+
+                $(".question").each(function() {
+                    var correctAnswer = $(this).data("correct");
+                    var selectedAnswer = $(this).find("input[type='radio']:checked").val();
+                    
+                    $(this).removeClass("correct incorrect missing");
+                    $(this).find("label").removeClass("answer-correct answer-incorrect");
+
+                    if (!selectedAnswer) {
+                        allAnswered = false;
+                        $(this).addClass("missing");
+                    } else if (selectedAnswer === correctAnswer) {
+                        score++;
+                        $(this).addClass("correct");
+                        $(this).find("label[for='" + selectedAnswer + "']").addClass("answer-correct");
+                    } else {
+                        $(this).addClass("incorrect");
+                        $(this).find("label[for='" + selectedAnswer + "']").addClass("answer-incorrect");
+                        $(this).find("label[for='" + correctAnswer + "']").addClass("answer-correct");
+                    }
+                });
+
+                if (!allAnswered) {
+                    $("#resultat").text("Veuillez répondre à toutes les questions.");
+                } else {
+                    $("#resultat").text("Vous avez obtenu " + score + " sur " + totalQuestions + ".");
+                }
+            });
+        });
+    </script>
+</body>
+</html>
